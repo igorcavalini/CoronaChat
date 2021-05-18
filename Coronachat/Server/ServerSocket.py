@@ -5,7 +5,7 @@ class ServerSocket(threading.Thread):
 	"""
 	Suporta comunicações com um cliente conectado.
 
-	Attributes:
+	Atributos:
 		sc (socket.socket): Socket conectado.
 		sockname (tuple): Endereço do socket do client.
 		server (Server): Thread pai.
@@ -23,21 +23,19 @@ class ServerSocket(threading.Thread):
 		de threads ServerSocket no thread de servidor pai.
 		"""
 		while True:
-			message = self.sc.recv(1024).decode('ascii')
-			if message:
-				print(f'{self.sockname} diz {message}')
-				self.server.broadcast(message, self.sockname)
+			mensagem = self.sc.recv(1024).decode('ascii')
+			if mensagem:
+				print(f'{self.sockname} diz {mensagem}')
+				self.server.broadcast(mensagem, self.sockname)
 			else:
-				print(f'{self.sockname} fechou a conexao.')
+				print(f'{self.sockname} fechou a conexão.')
 				self.sc.close()
 				self.server.remove_connection(self)
 				return
 
-	def send(self, message):
+	def send(self, mensagem):
 		"""
 		Envia uma mensagem ao servidor conectado
 
-		Args:
-			message (str): Mensagem a ser enviada.
 		"""
-		self.sc.sendall(message.encode('ascii'))
+		self.sc.sendall(mensagem.encode('ascii'))

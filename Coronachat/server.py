@@ -6,28 +6,27 @@ import Coronachat.Server as Server
 
 
 
-def start_server(host, window):
-    """
-    Inicia o servidor com base no host passado na GUI.
 
-    Attributes:
-        host (str): Endereço IP servidor.
-        window (tk.Frame): Objeto tk.Frame que contém a interface GUI para entrada do nome do servidor.
-    """
-    window.destroy()
-    server = Server.Server(host, 1060)
-    server.start()
+def start_server(host, window):
+
+    #Inicia o servidor com base no host passado na GUI.
+
+
+    window.destroy() # FINALIZA A JANELA QUE PEDIU O HOST
+    server = Server.Server(host, 1060) # INICIA O SERVER PASSANDO O HOST E PORTA
+    server.start() # STARTA O SERVER
 
     exit = threading.Thread(target=utils.exit, args=(server,))
-    exit.start()
+    exit.start() #THREAD QUE PERMITE AO ADM DO SERVER FINALIZAR A CONEXÃO
+
 
 
 if __name__ == "__main__":
-    window = tk.Tk()
+    window = tk.Tk()  # CRIA A JANELA QUE VAI SOLICITAR O ENDEREÇO DE HOST
     window.title('Conexão do Server')
     window.resizable(height=False, width=False)
 
-    host_input = tk.Entry(master=window,
+    host_input = tk.Entry(master=window,   # RECEBE A ENTRADA DO USUÁRIO
                           width='50',
                           borderwidth=18,
                           bg='#ccc',
@@ -35,11 +34,12 @@ if __name__ == "__main__":
                           font='Times 10')
     host_input.pack(fill=tk.BOTH, expand=True)
 
-    host_input.insert(0,
+    host_input.insert(0,  # TEXTO DO INPUT
                       "Digite o endereço de host para o servidor: localhost")
 
-    host_input.bind("<Button-1>", lambda x: host_input.delete(0, tk.END))
-    host_input.bind("<Return>",
+    host_input.bind("<Button-1>", # DELETA O TEXTO DO INPUT AO CLICAR
+                    lambda x: host_input.delete(0, tk.END))
+    host_input.bind("<Return>",# CHAMA A DEF START SERV PASSANDO O HOST E A JANELA
                     lambda x: start_server(host_input.get(), window))
 
     width = 450

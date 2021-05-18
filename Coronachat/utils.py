@@ -10,9 +10,14 @@ def exit(server):
 		server (Server): Servidor que será desligado.
 	"""
 	while True:
-		ipt = input('')
-		if (ipt == 'q'):
+		ipt = input('Digite quit para encerrar a conexão: ')
+		if (ipt == 'quit'):
 			print('Fechando todas as conexoes...')
 			for connection in server.connections:
+
 				connection.sc.close()
-			print('Desligando o servidor ...')
+
+				print('Desligando o servidor ...')
+
+
+		break

@@ -3,55 +3,57 @@ import socket
 import tkinter as tk
 from datetime import datetime
 from win10toast import ToastNotifier
+from winsound import *
 import os
 
 
 
-class Receive(threading.Thread):
+class Recebe(threading.Thread):
 	"""
 	A thread de recebimento escuta as mensagens recebidas do servidor.
 
 	Attributes:
 		sock (socket.socket): Objeto socket conectado.
 		name (str): Nome de usuário fornecido pelo usuário.
-		messages (tk.Listbox): Objeto tk.Listbox que contém todas as mensagens exibidas na GUI.
+		mensagens (tk.Listbox): Objeto tk.Listbox que contém todas as mensagens exibidas na GUI.
 	"""
 	def __init__(self, sock, name):
 		super().__init__()
 		self.sock = sock
 		self.name = name
-		self.messages = None
+		self.mensagens = None
 
 	def run(self):
 		"""
-		Recebe dados do servidor e os exibe na GUI.
+		Recebe dados do CLIENTE e os exibe na GUI.
 		Sempre escuta os dados de entrada até que uma das extremidades feche o socket.
 		"""
 		while True:
-			self.message = self.sock.recv(1024).decode('ascii')
+			self.mensagem = self.sock.recv(1024).decode('ascii')
+			if self.mensagem == 'quit':
+				self.sock.close()
 
-			if self.message:
 
-				if self.messages:
+			if self.mensagem:
 
-					# current date and time
+				if self.mensagens:
+
+
 					now = datetime.now()
 					timestamp = now.strftime("%H:%M:%S")
-					self.messages.insert(
-					    tk.END, '(' + str(timestamp) + ')' + ' ' + self.message)
+					self.mensagens.insert(
+					    tk.END, '(' + str(timestamp) + ')' + ' ' + self.mensagem)
 
 					# Notificação windows
 					if os.name == 'nt':
-
+						PlaySound('notification.wav', SND_FILENAME)
 						toaster = ToastNotifier()
-						toaster.show_toast(self.message)
+						toaster.show_toast(self.mensagem)
 
-					print('\r{}\n{}: '.format(self.message,
-					                          self.name).encode('ascii'),
-					      end='')
+
 				else:
-					print('\r{}\n{}: '.format(self.message,
-					                          self.name).encode('ascii'),
+					print('\r{}\n{}: '.format(self.mensagem,
+											  self.name).encode('ascii'),
 					      end='')
 			else:
 				# Server has closed the socket, exit the program
